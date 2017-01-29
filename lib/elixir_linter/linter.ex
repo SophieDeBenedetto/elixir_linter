@@ -2,6 +2,8 @@ require IEx;
 defmodule ElixirLinter.Linter do 
 
   # def lint(filepath) do 
+    #  i think this will check for config in the given dir, or use the default. 
+    # config = Credo.Config.read_or_default(filepath, nil, true)
   #   Credo.Config.read_or_default(filepath, nil, true)
   #   # Credo.Config.read_or_default(nil, true)
   #   # Credo.Check.Runner.run(files, config)
