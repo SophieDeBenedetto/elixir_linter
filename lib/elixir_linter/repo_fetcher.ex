@@ -25,8 +25,8 @@ defmodule ElixirLinter.RepoFetcher do
     |> remove_repo(repo_name)
   end
 
-  defp remove_repo(included, repo_name) when included do 
-    File.rm_rf("tmp/#{repo_name}")
-  end
+  # clean this up
+  def remove_repo(true, repo_name), do: File.rm_rf("tmp/#{repo_name}")
+  def remove_repo(false, repo_name), do: "whatever"
 
 end

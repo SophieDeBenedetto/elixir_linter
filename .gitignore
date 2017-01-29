@@ -21,4 +21,4 @@ erl_crash.dump
 
 # cloned down dirs
 
-/temp
+/tmp/*

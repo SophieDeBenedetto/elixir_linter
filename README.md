@@ -4,7 +4,12 @@
 
 * How to store absolute filepath from root of this directory to /tmp
 * configure to run from command line
-* understand how to package for inclusion in a larger project
+* understand how to package for inclusion in a larger project (maybe punt until done with next part)
+
+...
+
+* Use credo to lint repo and capture output
+* delete repo from tmp
 
 ## Installation
 
