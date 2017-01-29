@@ -1,6 +1,10 @@
 # ElixirLinter
 
-**TODO: Add description**
+## Next Steps
+
+* How to store absolute filepath from root of this directory to /tmp
+* configure to run from command line
+* understand how to package for inclusion in a larger project
 
 ## Installation
 

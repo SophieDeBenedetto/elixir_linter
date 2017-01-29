@@ -1,3 +1,4 @@
+require IEx;
 defmodule ElixirLinter.Server do 
   use GenServer
 
@@ -17,12 +18,15 @@ defmodule ElixirLinter.Server do
 
   def handle_cast(:fetch_repo, {repo, store_pid}) do 
     ElixirLinter.RepoFetcher.fetch(repo)
-    |> ElixirLinter.Store.save_filepath store_pid
+    |> ElixirLinter.Store.store_filepath(store_pid)
+    {:noreply, {repo, store_pid}}
   end
 
-  def handle_call(:lint_repo, {repo, store_pid}) do 
+  def handle_call(:lint_repo, _pid, {repo, store_pid}) do 
     ElixirLinter.Store.get_filepath store_pid
     |> ElixirLinter.Linter.lint
+    #  what to really return?
+    {:reply, "test", {repo, store_pid}}
   end
 
 
@@ -32,7 +36,7 @@ defmodule ElixirLinter.Server do
 
   def handle_call(:terminate, _pid, {repo, store_pid}) do 
     IO.puts "I'm terminating"
-    IO.inspect {repo, stash_pid}
+    IO.inspect {repo, store_pid}
     :ok
   end
 
@@ -41,7 +45,7 @@ defmodule ElixirLinter.Server do
   end
 
   def init(store_pid) do 
-    repo = ElixiLinter.Store.get_repo store_pid
+    repo = ElixirLinter.Store.get_repo store_pid
     {:ok, {repo, store_pid}}
   end
 
