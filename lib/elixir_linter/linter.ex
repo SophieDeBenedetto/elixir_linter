@@ -2,14 +2,18 @@ require IEx;
 defmodule ElixirLinter.Linter do 
 
   def lint(filepath) do 
-    IO.puts "INSIDE LINT+++++++++++"
-    IO.puts "FILEPATH: #{filepath}"
      # i think this will check for config in the given dir, or use the default. 
     config = Credo.Config.read_or_default(filepath, nil, true)
-    files = list_all(filepath)
-    IEx.pry
-    x = Credo.Check.Runner.run(files, config)
-    IEx.pry
+    list_all(filepath)
+    |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
+    |> Credo.Check.Runner.run(config)
+
+    # EXTRACT ISSUES BY FILENAME
+    # result represents a result for a single file analysis
+    # file_info = elem(result, 0)
+    # file_result = List.first(file_info)
+    # file_name = file_result.name 
+    # file_issues = file_result.issues   
   end
 
   def list_all(filepath) do
@@ -30,27 +34,4 @@ defmodule ElixirLinter.Linter do
   def expand({:error, _}, path) do 
     [path]
   end
-
-  # def delete_all(list, el) do 
-  #   _delete_all(list, el, []) |> Enum.reverse
-  # end
-
-  # def _delete_all([head | tail], el, new_list) when head === el do
-  #   _delete_all(tail, el, new_list)
-  # end
-
-
-  # def _delete_all([head | tail], el, new_list) do 
-  #   _delete_all(tail, el, [head | new_list])
-  # end
-
-  # def _delete_all([], _, new_list) do 
-  #   new_list
-  # end
-
-  # def _clean_up(list) do 
-  #   list
-  #   |> List.flatten
-  #   |> delete_all(nil)
-  # end
 end
