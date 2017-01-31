@@ -23,8 +23,10 @@ defmodule ElixirLinter.Server do
   end
 
   def handle_call(:lint_repo, _pid, {repo, store_pid}) do 
-    ElixirLinter.Store.get_filepath store_pid
-    |> ElixirLinter.Linter.lint
+    filepath = ElixirLinter.Store.get_filepath store_pid
+    ElixirLinter.Linter.lint(filepath)
+    # |> ElixirLinter.Linter.lint
+    # ElixirLinter.Linter.lint("tmp/weather-for-noah-elixir-cli")
     #  what to really return?
     {:reply, "test", {repo, store_pid}}
   end

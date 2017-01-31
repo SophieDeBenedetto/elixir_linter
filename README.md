@@ -6,10 +6,15 @@
 * configure to run from command line
 * understand how to package for inclusion in a larger project (maybe punt until done with next part)
 
+
 ...
 
 * Use credo to lint repo and capture output
 * delete repo from tmp
+
+## Bugz!
+
+* Looks like `#fetch_path` fires, then `#lint_repo` before the repo is fully cloned down. Maybe need to use message sending inside `Store.store_filepath`. Send server pid in to `Store.store_filepath` so that Store can `send` message with filepath to Server, triggering server to Lint repo? OR have top-level supervisor maintain all those pids and pass them down? ACTUALLY -- refactor to use Tasks that are synchronous. 
 
 ## Installation
 

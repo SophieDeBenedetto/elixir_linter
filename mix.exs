@@ -14,7 +14,7 @@ defmodule ElixirLinter.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :porcelain]]
+    [applications: [:logger, :porcelain, :credo]]
   end
 
   # Dependencies can be Hex packages:
