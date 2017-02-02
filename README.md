@@ -9,8 +9,9 @@
 
 ...
 
-* Use credo to lint repo and capture output
-* delete repo from tmp
+* format issues for output to terminal -- plug in to existing Credo code for this. pass flags down from `ElixirLinter.start` to output issues or capture them. 
+* capture list of issue structs
+
 
 ## Bugz!
 
