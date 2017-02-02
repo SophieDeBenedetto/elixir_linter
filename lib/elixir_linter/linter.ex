@@ -7,6 +7,7 @@ defmodule ElixirLinter.Linter do
     list_all(filepath)
     |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
     |> Credo.Check.Runner.run(config)
+    |> IO.inspect
 
     # EXTRACT ISSUES BY FILENAME
     # result represents a result for a single file analysis
@@ -23,6 +24,7 @@ defmodule ElixirLinter.Linter do
   defp _list_all(filepath) do 
     cond do
       String.contains?(filepath, ".git") -> []
+      String.contains?(filepath, ".md") -> []
       true -> expand(File.ls(filepath), filepath)       
     end
   end
@@ -32,6 +34,9 @@ defmodule ElixirLinter.Linter do
     |> Enum.flat_map(&_list_all("#{path}/#{&1}"))
   end
   def expand({:error, _}, path) do 
-    [path]
+    cond do
+      String.contains?(path, ".") === false -> []
+      true -> [path]
+    end
   end
 end

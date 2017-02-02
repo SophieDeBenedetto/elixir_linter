@@ -3,34 +3,32 @@ defmodule ElixirLinter.Server do
   use GenServer
 
   def start_link(store_pid) do 
-    {:ok, _pid} = GenServer.start_link(__MODULE__, store_pid, name: __MODULE__)
+    repo_name = List.first(ElixirLinter.Store.get_repo(store_pid))
+    Agent.start_link(fn -> %{store_pid: store_pid, repo_name: repo_name} end, name: __MODULE__)
+    
     fetch_repo
-    lint_repo
+    |> lint_repo
   end
 
   def fetch_repo do 
-    GenServer.cast(__MODULE__, :fetch_repo)
+     Task.async(&ElixirLinter.Server.do_fetch_repo/0)
+    |> Task.await
   end
 
-  def lint_repo do 
-    GenServer.call(__MODULE__, :lint_repo)
+  def do_fetch_repo do 
+    Agent.get(__MODULE__, fn dict -> dict[:repo_name] end)
+    |> _do_fetch_repo
   end
 
-  def handle_cast(:fetch_repo, {repo, store_pid}) do 
-    ElixirLinter.RepoFetcher.fetch(repo)
-    |> ElixirLinter.Store.store_filepath(store_pid)
-    {:noreply, {repo, store_pid}}
+  def _do_fetch_repo(repo) do 
+    Task.async(fn -> ElixirLinter.RepoFetcher.fetch(repo) end)
+    |> Task.await
   end
 
-  def handle_call(:lint_repo, _pid, {repo, store_pid}) do 
-    filepath = ElixirLinter.Store.get_filepath store_pid
-    ElixirLinter.Linter.lint(filepath)
-    # |> ElixirLinter.Linter.lint
-    # ElixirLinter.Linter.lint("tmp/weather-for-noah-elixir-cli")
-    #  what to really return?
-    {:reply, "test", {repo, store_pid}}
+  def lint_repo(filepath) do 
+    Task.async(fn -> ElixirLinter.Linter.lint(filepath) end)
+    |> Task.await
   end
-
 
   def terminate do 
     GenServer.call(__MODULE__, :terminate)
@@ -45,11 +43,5 @@ defmodule ElixirLinter.Server do
   def format_status(_reason, [_pdict, state]) do 
     [data: [{'State', "My current state is '#{inspect state}', and I'm happy"}]]
   end
-
-  def init(store_pid) do 
-    repo = ElixirLinter.Store.get_repo store_pid
-    {:ok, {repo, store_pid}}
-  end
-
 
 end
