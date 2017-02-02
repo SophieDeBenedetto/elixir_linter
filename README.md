@@ -14,8 +14,7 @@
 
 ## Bugz!
 
-* Looks like `#fetch_path` fires, then `#lint_repo` before the repo is fully cloned down. Maybe need to use message sending inside `Store.store_filepath`. Send server pid in to `Store.store_filepath` so that Store can `send` message with filepath to Server, triggering server to Lint repo? OR have top-level supervisor maintain all those pids and pass them down? ACTUALLY -- refactor to use Tasks that are synchronous. 
-* Why isn't Credo runner working? find where in Credo code base the files from the collection are actually *read*. Maybe `#run` is taking in raw files, not file names? Looks like its in `sources.ex`. 
+* Credo not excluding the correct files from linting. 
 
 ## Installation
 
