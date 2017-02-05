@@ -38,16 +38,20 @@ defmodule ElixirLinter.Linter do
     end
   end
 
-  def expand({:ok, files}, path) do
+  defp expand({:ok, files}, path) do
     files
     |> Enum.flat_map(&_list_all("#{path}/#{&1}"))
   end
-  def expand({:error, _}, path) do
-    cond do
-      (String.contains?(path, ".ex") == false) && (String.contains?(path, ".exs") == false) -> []
-      true ->
-        IO.puts "ADDING #{path} to collection"
-        [path]
-    end
+
+  defp expand({:error, _}, path) do
+    collect_file({is_elixir_file?(path), path})
+  end
+
+  defp collect_file({true, path}), do: [path]
+
+  defp collect_file({false, path}), do: []
+
+  defp is_elixir_file?(path) do
+    String.contains?(path, ".ex") || String.contains?(path, ".exs")
   end
 end
