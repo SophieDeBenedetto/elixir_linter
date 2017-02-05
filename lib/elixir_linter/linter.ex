@@ -3,8 +3,8 @@ defmodule ElixirLinter.Linter do
 
   def lint(filepath) do
     config = Credo.Config.read_or_default(filepath, nil, true)
-      |> Map.merge(%{skipped_checks: []})
-
+      |> Map.merge(%{skipped_checks: [], color: true})
+    IO.inspect config
     source_files = list_all(filepath)
       |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
 

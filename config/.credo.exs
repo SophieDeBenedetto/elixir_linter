@@ -26,7 +26,6 @@
       # If you create your own checks, you must specify the source files for
       # them here, so they can be loaded by Credo before running the analysis.
       requires: [],
-      skipped_checks: [],
       #
       # Credo automatically checks for updates, like e.g. Hex does.
       # You can disable this behaviour below:

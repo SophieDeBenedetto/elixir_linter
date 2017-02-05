@@ -7,7 +7,8 @@ defmodule ElixirLinter.Mixfile do
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps(),
+     escript: escript]
   end
 
   # Configuration for the OTP application
@@ -31,5 +32,9 @@ defmodule ElixirLinter.Mixfile do
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:porcelain, "~> 2.0"}
     ]
+  end
+
+  def escript do
+    [main_module: ElixirLinter.Cli]
   end
 end
