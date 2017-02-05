@@ -6,7 +6,6 @@ defmodule ElixirLinter.Linter do
     config = Map.merge(config, %{skipped_checks: []})
     source_files = list_all(filepath)
       |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
-    # # config = Credo.Check.Runner.prepare_config(source_files, config)
     {source_files, config} = Credo.Check.Runner.run(source_files, config)
     output = Credo.CLI.Output.IssuesByScope
     output.print_before_info(source_files, config)
@@ -45,9 +44,10 @@ defmodule ElixirLinter.Linter do
   end
   def expand({:error, _}, path) do
     cond do
-      String.contains?(path, ".ex") == false -> []
-      String.contains?(path, ".exs") == false -> []
-      true -> [path]
+      (String.contains?(path, ".ex") == false) && (String.contains?(path, ".exs") == false) -> []
+      true ->
+        IO.puts "ADDING #{path} to collection"
+        [path]
     end
   end
 end
