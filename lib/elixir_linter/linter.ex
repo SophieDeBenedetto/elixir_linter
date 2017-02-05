@@ -3,28 +3,14 @@ defmodule ElixirLinter.Linter do
 
   def lint(filepath) do
     config = Credo.Config.read_or_default(filepath, nil, true)
-    config = Map.merge(config, %{skipped_checks: []})
+      |> Map.merge(%{skipped_checks: []})
+
     source_files = list_all(filepath)
       |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
+
     {source_files, config} = Credo.Check.Runner.run(source_files, config)
-    output = Credo.CLI.Output.IssuesByScope
-    output.print_before_info(source_files, config)
-    output.print_after_info(source_files, config, 0, 0)
 
-
-    # i think this will check for config in the given dir, or use the default.
-    # config = Credo.Config.read_or_default(filepath, nil, true)
-    # list_all(filepath)
-    # |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
-    # |> Credo.Check.Runner.run(config)
-    # |> IO.inspect
-
-    # EXTRACT ISSUES BY FILENAME
-    # result represents a result for a single file analysis
-    # file_info = elem(result, 0)
-    # file_result = List.first(file_info)
-    # file_name = file_result.name
-    # file_issues = file_result.issues
+    print_to_command_line(source_files, config)
   end
 
   def list_all(filepath) do
@@ -53,5 +39,11 @@ defmodule ElixirLinter.Linter do
 
   defp is_elixir_file?(path) do
     String.contains?(path, ".ex") || String.contains?(path, ".exs")
+  end
+
+  defp print_to_command_line(source_files, config) do
+    output = Credo.CLI.Output.IssuesByScope
+    output.print_before_info(source_files, config)
+    output.print_after_info(source_files, config, 0, 0)
   end
 end

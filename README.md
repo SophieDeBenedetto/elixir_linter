@@ -9,13 +9,26 @@
 
 ...
 
-* format issues for output to terminal -- plug in to existing Credo code for this. pass flags down from `ElixirLinter.start` to output issues or capture them. 
+* format issues for output to terminal -- plug in to existing Credo code for this. pass flags down from `ElixirLinter.start` to output issues or capture them.
 * capture list of issue structs
 
 
 ## Bugz!
 
-* Credo not excluding the correct files from linting. 
+* Credo not excluding the correct files from linting.
+
+## Notes
+
+* `Linter.lint`
+
+```elixir
+# EXTRACT ISSUES BY FILENAME
+# result represents a result for a single file analysis
+file_info = elem(result, 0)
+file_result = List.first(file_info)
+file_name = file_result.name
+file_issues = file_result.issues
+```
 
 ## Installation
 
