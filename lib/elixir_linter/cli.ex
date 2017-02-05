@@ -5,7 +5,7 @@ defmodule ElixirLinter.Cli do
     |> run
   end
 
-  def parse_args(args) do
+  defp parse_args(args) do
     parsed_args = OptionParser.parse(args, switches: [help: :boolean],
                                      aliases: [h: :help])
     case parsed_args do
@@ -15,14 +15,20 @@ defmodule ElixirLinter.Cli do
     end
   end
 
-  def run(:help) do
+  defp run(:help) do
     Bunt.puts [:steelblue, """
       Run the Elixir Linter engine from the command line by typing elixir_linter --lint <repo repo>
       where the repo name is formatted like this: 'owner/repo_name`.
     """]
   end
 
-  def run({:start, repo_name}) do
+  defp run({:start, repo_name}) do
     ElixirLinter.start("whatever", repo_name)
+  end
+
+  def print_to_command_line({source_files, config}) do
+    output = Credo.CLI.Output.IssuesByScope
+    output.print_before_info(source_files, config)
+    output.print_after_info(source_files, config, 0, 0)
   end
 end

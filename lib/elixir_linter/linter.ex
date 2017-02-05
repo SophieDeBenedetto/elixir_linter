@@ -4,13 +4,9 @@ defmodule ElixirLinter.Linter do
   def lint(filepath) do
     config = Credo.Config.read_or_default(filepath, nil, true)
       |> Map.merge(%{skipped_checks: [], color: true})
-    IO.inspect config
     source_files = list_all(filepath)
       |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
-
-    {source_files, config} = Credo.Check.Runner.run(source_files, config)
-
-    print_to_command_line(source_files, config)
+    Credo.Check.Runner.run(source_files, config)
   end
 
   def list_all(filepath) do
@@ -39,11 +35,5 @@ defmodule ElixirLinter.Linter do
 
   defp is_elixir_file?(path) do
     String.contains?(path, ".ex") || String.contains?(path, ".exs")
-  end
-
-  defp print_to_command_line(source_files, config) do
-    output = Credo.CLI.Output.IssuesByScope
-    output.print_before_info(source_files, config)
-    output.print_after_info(source_files, config, 0, 0)
   end
 end
