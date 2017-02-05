@@ -11,10 +11,10 @@ defmodule ElixirLinter.Server do
     |> process_lint
   end
 
-  def process_lint({source_files, config}) do
+  def process_lint(results) do
     repo_name = Agent.get(__MODULE__, fn dict -> dict[:repo_name] end)
-    worker = Task.async(fn -> ElixirLinter.RepoFetcher.clean_up(repo_name) end)
-    ElixirLinter.Cli.print_to_command_line({source_files, config})
+    worker = Task.async(fn -> ElixirLinter.RepoFetcher.delete_repo_if_cloned(repo_name) end)
+    ElixirLinter.Cli.print_to_command_line(results)
     Task.await(worker)
   end
 

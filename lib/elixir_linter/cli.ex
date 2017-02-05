@@ -26,9 +26,9 @@ defmodule ElixirLinter.Cli do
     ElixirLinter.start("whatever", repo_name)
   end
 
-  def print_to_command_line({source_files, config}) do
+  def print_to_command_line({source_files, config, time_load, time_run}) do
     output = Credo.CLI.Output.IssuesByScope
     output.print_before_info(source_files, config)
-    output.print_after_info(source_files, config, 0, 0)
+    output.print_after_info(source_files, config, time_load, time_run)
   end
 end

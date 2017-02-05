@@ -2,11 +2,24 @@ require IEx;
 defmodule ElixirLinter.Linter do
 
   def lint(filepath) do
+    {time_load, {source_files, config}} = :timer.tc fn ->
+      load_and_validate_files(filepath)
+    end
+
+    {time_run, {source_files, config}} =:timer.tc fn ->
+      Credo.Check.Runner.run(source_files, config)
+    end
+
+    {source_files, config, time_load, time_run}
+  end
+
+  def load_and_validate_files(filepath) do
     config = Credo.Config.read_or_default(filepath, nil, true)
       |> Map.merge(%{skipped_checks: [], color: true})
     source_files = list_all(filepath)
       |> Enum.map(&Credo.SourceFile.parse(File.read!(&1), &1))
-    Credo.Check.Runner.run(source_files, config)
+
+    {source_files, config}
   end
 
   def list_all(filepath) do
