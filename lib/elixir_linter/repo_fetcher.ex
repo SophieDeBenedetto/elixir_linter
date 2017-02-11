@@ -26,6 +26,7 @@ defmodule ElixirLinter.RepoFetcher do
   end
 
   def clean_up(repo) do
+    IO.puts "Removing repo #{repo}......"
     repo
     |> get_repo_name
     |> delete_repo_if_cloned
