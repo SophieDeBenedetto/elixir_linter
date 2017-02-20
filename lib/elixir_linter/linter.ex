@@ -6,7 +6,7 @@ defmodule ElixirLinter.Linter do
       load_and_validate_files(filepath)
     end
 
-    {time_run, {source_files, config}} =:timer.tc fn ->
+    {time_run, {source_files, config}} = :timer.tc fn ->
       Credo.Check.Runner.run(source_files, config)
     end
 
