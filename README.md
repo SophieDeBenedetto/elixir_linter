@@ -1,52 +1,47 @@
 # ElixirLinter
 
-## Next Steps
+Elixir Linter is an engine for quickly and easily running Credo code quality evaluation against any project!
 
-* How to store absolute filepath from root of this directory to /tmp
-* configure to run from command line
-* understand how to package for inclusion in a larger project (maybe punt until done with next part)
+Learn more about Credo here: https://github.com/rrrene/credo
 
-
-...
-
-* format issues for output to terminal -- plug in to existing Credo code for this. pass flags down from `ElixirLinter.start` to output issues or capture them.
-* capture list of issue structs
-
-
-## Bugz!
-
-* Credo not excluding the correct files from linting.
-
-## Notes
-
-* `Linter.lint`
+## Configuration
+First, you'll need to configure the application with a GitHub API Key. Set your key in your `config.exs` file like this:
 
 ```elixir
-# EXTRACT ISSUES BY FILENAME
-# result represents a result for a single file analysis
-file_info = elem(result, 0)
-file_result = List.first(file_info)
-file_name = file_result.name
-file_issues = file_result.issues
+config :elixir_linter, github_oauth_token: "xxxx"
 ```
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+1. Add `elixir_linter` to your list of dependencies in `mix.exs`:
 
-  1. Add `elixir_linter` to your list of dependencies in `mix.exs`:
+```elixir
+def deps do
+  [{:elixir_linter, "~> 0.1.0"}]
+end
+```
 
-    ```elixir
-    def deps do
-      [{:elixir_linter, "~> 0.1.0"}]
-    end
-    ```
+2. Ensure `elixir_linter` is started before your application:
 
-  2. Ensure `elixir_linter` is started before your application:
+```elixir
+def application do
+  [applications: [:elixir_linter]]
+end
+```
 
-    ```elixir
-    def application do
-      [applications: [:elixir_linter]]
-    end
-    ```
+## Usage
+
+Start up the application via 
+
+```elixir
+ElixirLinter.Runner.run(repo_name)
+```
+
+in which `repo_name` represents the name of a GitHub repo containing a valid Elixir project. The `repo_name` should be in the format `owner/project_name`. 
+
+To output Credo results to the command line, run 
+
+```elixir
+ElixirLinter.Runner.run(repo_name, "verbose")
+```
 
