@@ -21,7 +21,8 @@ defmodule ElixirLinter.Mixfile do
   defp deps do
     [
       {:credo, "~> 0.5"},
-      {:porcelain, "~> 2.0"}
+      {:porcelain, "~> 2.0"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
