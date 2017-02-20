@@ -2,11 +2,32 @@ require IEx;
 defmodule ElixirLinter.Server do
   use GenServer
 
+  def start_link(store_pid, "verbose") do
+    repo_name = ElixirLinter.Store.get_repo(store_pid)
+    {:ok, task_supervisor_pid} = Task.Supervisor.start_link()
+    Agent.start_link(fn -> %{repo_name: repo_name, task_supervisor: task_supervisor_pid} end, name: __MODULE__)
+    fetch_repo
+    |> lint_repo
+    |> process_lint("verbose")
+  end
+
+  def process_lint(results, "verbose") do
+    IO.puts "INSDIE PROCESS LINT VERBOSE"
+    repo_name = get_repo
+    worker = get_task_supervisor
+    |> Task.Supervisor.async(fn -> 
+      ElixirLinter.RepoFetcher.clean_up(repo_name)
+    end)
+    ElixirLinter.Cli.print_to_command_line(results)
+    Task.await(worker)
+    results
+  end
+
   def start_link(store_pid) do
+    IO.inspect store_pid
     repo_name = List.first(ElixirLinter.Store.get_repo(store_pid))
     {:ok, task_supervisor_pid} = Task.Supervisor.start_link()
     Agent.start_link(fn -> %{repo_name: repo_name, task_supervisor: task_supervisor_pid} end, name: __MODULE__)
-    
     fetch_repo
     |> lint_repo
     |> process_lint
@@ -18,8 +39,8 @@ defmodule ElixirLinter.Server do
     |> Task.Supervisor.async(fn -> 
       ElixirLinter.RepoFetcher.clean_up(repo_name)
     end)
-    ElixirLinter.Cli.print_to_command_line(results)
     Task.await(worker)
+    results
   end
 
   def fetch_repo do

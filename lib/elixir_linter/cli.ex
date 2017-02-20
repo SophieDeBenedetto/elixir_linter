@@ -23,7 +23,7 @@ defmodule ElixirLinter.Cli do
   end
 
   defp run({:start, repo_name}) do
-    ElixirLinter.start("whatever", repo_name)
+    ElixirLinter.Runner.run(repo_name, "verbose")
   end
 
   def print_to_command_line({source_files, config, time_load, time_run}) do

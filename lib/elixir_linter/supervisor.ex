@@ -1,6 +1,18 @@
 defmodule ElixirLinter.Supervisor do 
   use Supervisor
 
+  def start_link([repo, "verbose"]) do 
+    result = {:ok, sup} = Supervisor.start_link(__MODULE__, [repo])
+    start_workers(sup, [repo, "verbose"])
+    result
+  end
+
+  def start_workers(sup, [repo, "verbose"]) do
+    IO.inspect repo
+    {:ok, store} = Supervisor.start_child(sup, worker(ElixirLinter.Store, [repo]))
+    Supervisor.start_child(sup, supervisor(ElixirLinter.SubSupervisor, [store, "verbose"]))
+  end
+
   def start_link(repo) do 
     result = {:ok, sup} = Supervisor.start_link(__MODULE__, [repo])
     start_workers(sup, repo)
